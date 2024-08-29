@@ -1,4 +1,5 @@
 import JsonEditor from './JsonEditor'
+import JsonViewer from './JsonViewer'
 import {
   type JsonEditorProps,
   type UpdateFunction,
@@ -36,6 +37,7 @@ import extract from 'object-property-extractor'
 
 export {
   JsonEditor,
+  JsonViewer,
   themes,
   type ThemeName,
   type Theme,
