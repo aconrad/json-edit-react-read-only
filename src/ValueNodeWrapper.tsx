@@ -1,18 +1,18 @@
 import React, { useEffect, useState, useMemo, useCallback } from 'react'
 import {
-  StringValue,
-  NumberValue,
-  BooleanValue,
-  NullValue,
   InvalidValue,
   INVALID_FUNCTION_STRING,
+  StringValueImmutable,
+  NumberValueImmutable,
+  BooleanValueImmutable,
+  NullValueImmutable,
 } from './ValueNodes'
 import { EditButtons, InputButtons } from './ButtonPanels'
 import {
   DataTypes,
   type DataType,
   type ValueNodeProps,
-  type InputProps,
+  type InputImmutableProps,
   type CollectionData,
   type ValueData,
   type JsonData,
@@ -348,17 +348,17 @@ const getDataType = (value: unknown, customNodeData?: CustomNodeData) => {
   return 'invalid'
 }
 
-const getInputComponent = (dataType: DataType, inputProps: InputProps) => {
+const getInputComponent = (dataType: DataType, inputProps: InputImmutableProps) => {
   const value = inputProps.value
   switch (dataType) {
     case 'string':
-      return <StringValue {...inputProps} value={value as string} />
+      return <StringValueImmutable {...inputProps} value={value as string} />
     case 'number':
-      return <NumberValue {...inputProps} value={value as number} />
+      return <NumberValueImmutable {...inputProps} value={value as number} />
     case 'boolean':
-      return <BooleanValue {...inputProps} value={value as boolean} />
+      return <BooleanValueImmutable {...inputProps} value={value as boolean} />
     case 'null':
-      return <NullValue {...inputProps} />
+      return <NullValueImmutable {...inputProps} />
     default:
       return <InvalidValue {...inputProps} />
   }

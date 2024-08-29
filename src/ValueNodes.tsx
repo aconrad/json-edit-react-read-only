@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { AutogrowTextArea } from './AutogrowTextArea'
-import { type InputProps } from './types'
+import { type InputImmutableProps, type InputProps } from './types'
 import { useTheme } from './theme'
 import './style.css'
 
@@ -22,6 +22,31 @@ export const toPathString = (path: Array<string | number>) =>
     // non-printable char
     .map((part) => (part === '' ? String.fromCharCode(0) : part))
     .join('.')
+
+export const StringValueImmutable: React.FC<InputImmutableProps & { value: string }> = ({
+  value,
+  path,
+  stringTruncate,
+  showStringQuotes,
+  nodeData,
+}) => {
+  const { getStyles } = useTheme()
+  const pathString = toPathString(path)
+
+  const quoteChar = showStringQuotes ? '"' : ''
+
+  return (
+    <div
+      id={`${pathString}_display`}
+      className="jer-value-string"
+      style={getStyles('string', nodeData)}
+    >
+      {quoteChar}
+      {truncate(value, stringTruncate)}
+      {quoteChar}
+    </div>
+  )
+}
 
 export const StringValue: React.FC<InputProps & { value: string }> = ({
   value,
@@ -68,6 +93,22 @@ export const StringValue: React.FC<InputProps & { value: string }> = ({
       {truncate(value, stringTruncate)}
       {quoteChar}
     </div>
+  )
+}
+
+export const NumberValueImmutable: React.FC<InputImmutableProps & { value: number }> = ({
+  value,
+  nodeData,
+}) => {
+  const { getStyles } = useTheme()
+
+  return (
+    <span
+      className="jer-value-number"
+      style={getStyles('number', nodeData)}
+    >
+      {value}
+    </span>
   )
 }
 
@@ -127,6 +168,23 @@ export const NumberValue: React.FC<InputProps & { value: number }> = ({
   )
 }
 
+export const BooleanValueImmutable: React.FC<InputImmutableProps & { value: boolean }> = ({
+  value,
+  path,
+  nodeData,
+}) => {
+  const { getStyles } = useTheme()
+
+  return (
+    <span
+      className="jer-value-boolean"
+      style={getStyles('boolean', nodeData)}
+    >
+      {String(value)}
+    </span>
+  )
+}
+
 export const BooleanValue: React.FC<InputProps & { value: boolean }> = ({
   value,
   setValue,
@@ -165,6 +223,22 @@ export const BooleanValue: React.FC<InputProps & { value: boolean }> = ({
   )
 }
 
+export const NullValueImmutable: React.FC<InputImmutableProps> = ({
+  value,
+  nodeData,
+}) => {
+  const { getStyles } = useTheme()
+
+  return (
+    <div
+      className="jer-value-null"
+      style={getStyles('null', nodeData)}
+    >
+      {String(value)}
+    </div>
+  )
+}
+
 export const NullValue: React.FC<InputProps> = ({
   value,
   isEditing,
@@ -197,7 +271,7 @@ export const NullValue: React.FC<InputProps> = ({
   )
 }
 
-export const InvalidValue: React.FC<InputProps> = ({ value }) => {
+export const InvalidValue: React.FC<InputImmutableProps> = ({ value }) => {
   let message = 'Error!'
   switch (typeof value) {
     case 'string':

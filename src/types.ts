@@ -4,6 +4,40 @@ export const ERROR_DISPLAY_TIME = 2500 // ms
 
 export type JsonData = CollectionData | ValueData
 
+export interface JsonViewerProps {
+  data: JsonData
+  setData?: (data: JsonData) => void
+  rootName?: string
+  onError?: OnErrorFunction
+  showErrorMessages?: boolean
+  enableClipboard?: boolean | CopyFunction
+  theme?: ThemeInput
+  icons?: IconReplacements
+  className?: string
+  id?: string
+  indent?: number
+  collapse?: boolean | number | FilterFunction
+  collapseAnimationTime?: number // ms
+  showCollectionCount?: boolean | 'when-closed'
+  restrictTypeSelection?: boolean | DataType[] | TypeFilterFunction
+  searchText?: string
+  searchFilter?: 'key' | 'value' | 'all' | SearchFilterFunction
+  searchDebounceTime?: number
+  keySort?: boolean | CompareFunction
+  showArrayIndices?: boolean
+  showStringQuotes?: boolean
+  defaultValue?: unknown
+  minWidth?: string | number
+  maxWidth?: string | number
+  rootFontSize?: string | number
+  stringTruncate?: number
+  translations?: Partial<LocalisedStrings>
+  customNodeDefinitions?: CustomNodeDefinition[]
+  customText?: CustomTextDefinitions
+  jsonParse?: (input: string) => JsonData
+  jsonStringify?: (input: JsonData) => string
+}
+
 export interface JsonEditorProps {
   data: JsonData
   setData?: (data: JsonData) => void
@@ -165,7 +199,21 @@ export interface NodeData {
   fullData: JsonData
   collapsed?: boolean
 }
-interface BaseNodeProps {
+interface BaseNodeImmutableProps {
+  data: unknown
+  parentData: CollectionData | null
+  nodeData: NodeData
+  onError?: OnErrorFunction
+  showErrorMessages: boolean
+  enableClipboard: boolean | CopyFunction
+  searchFilter?: SearchFilterFunction
+  searchText?: string
+  restrictTypeSelection: boolean | DataType[] | TypeFilterFunction
+  stringTruncate: number
+  indent: number
+}
+
+interface BaseNodeProps extends BaseNodeImmutableProps {
   data: unknown
   parentData: CollectionData | null
   nodeData: NodeData
@@ -189,6 +237,19 @@ interface BaseNodeProps {
   customNodeDefinitions: CustomNodeDefinition[]
 }
 
+export interface CollectionNodeImmutableProps extends BaseNodeImmutableProps {
+  data: CollectionData
+  collapseFilter: FilterFunction
+  collapseAnimationTime: number
+  keySort: boolean | CompareFunction
+  showArrayIndices: boolean
+  showCollectionCount: boolean | 'when-closed'
+  showStringQuotes: boolean
+  defaultValue: unknown
+  jsonParse: (input: string) => JsonData
+  jsonStringify: (data: JsonData) => string
+}
+
 export interface CollectionNodeProps extends BaseNodeProps {
   data: CollectionData
   collapseFilter: FilterFunction
@@ -204,6 +265,12 @@ export interface CollectionNodeProps extends BaseNodeProps {
 }
 
 export type ValueData = string | number | boolean
+export interface ValueNodeImmutableProps extends BaseNodeImmutableProps {
+  data: ValueData
+  showLabel: boolean
+  showStringQuotes: boolean
+}
+
 export interface ValueNodeProps extends BaseNodeProps {
   data: ValueData
   showLabel: boolean
@@ -244,17 +311,20 @@ export interface CustomNodeDefinition<T = Record<string, unknown>, U = Record<st
 
 export type CustomTextDefinitions = Partial<{ [key in keyof LocalisedStrings]: CustomTextFunction }>
 
-export interface InputProps {
+export interface InputImmutableProps {
   value: unknown
+  path: CollectionKey[]
+  stringTruncate: number
+  showStringQuotes: boolean
+  nodeData: NodeData
+}
+
+export interface InputProps extends InputImmutableProps {
   setValue: (value: ValueData) => void
   isEditing: boolean
   setIsEditing: React.Dispatch<React.SetStateAction<boolean>>
   handleEdit: () => void
   handleCancel: () => void
-  path: CollectionKey[]
-  stringTruncate: number
-  showStringQuotes: boolean
-  nodeData: NodeData
   translate: TranslateFunction
 }
 
